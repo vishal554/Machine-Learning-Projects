@@ -1,0 +1,36 @@
+import keras
+import matplotlib
+import matplotlib.pyplot as plt
+import numpy as np
+from sklearn.model_selection import cross_val_score
+from sklearn.linear_model import LogisticRegressionCV
+
+
+(x_train, y_train), (x_test, y_test) = keras.datasets.fashion_mnist.load_data()
+x_train = keras.utils.normalize(x_train, axis=1)
+x_test = keras.utils.normalize(x_test, axis=1)
+
+shuffle = np.random.permutation(60000)
+x_train = x_train[shuffle]
+y_train = y_train[shuffle]
+
+some_image = x_test[4999]
+plt.imshow(some_image)
+
+y_test[4999]
+
+LRCV = LogisticRegressionCV(max_iter=4000, tol=0.1)
+
+
+new_img = x_train.reshape(x_train.shape[0], (x_train.shape[1] * x_train.shape[2]))
+new_img1 = x_test.reshape(x_test.shape[0], (x_test.shape[1] * x_test.shape[2]))
+x_train = new_img
+x_test = new_img1
+
+
+
+LRCV.fit(x_train, y_train)
+
+cross_val_score(LRCV, x_train, y_train, cv=4, scoring="accuracy")
+
+a.mean()
