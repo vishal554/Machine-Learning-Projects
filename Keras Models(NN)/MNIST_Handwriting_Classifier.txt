@@ -1,0 +1,50 @@
+import numpy as np
+import matplotlib
+import matplotlib.pyplot as plt
+from sklearn.datasets import fetch_openml
+import tensorflow as tf
+
+mnist = fetch_openml('mnist_784')
+x = mnist['data']
+y = mnist['target']
+x = x.to_numpy()
+y = y.to_numpy()
+x.shape
+
+some_data = x[40001]
+some_data_image = some_data.reshape(28, 28)
+plt.imshow(some_data_image, cmap = matplotlib.cm.binary, interpolation="nearest")
+plt.axis("off")
+
+x_train = x[0:60000]
+y_train = y[0:60000]
+x_test = x[60000:70000]
+y_test = y[60000:70000]
+
+shuffle_index = np.random.permutation(60000)
+x_train = x_train[shuffle_index]
+y_train = y_train[shuffle_index]
+
+
+y_train = y_train.astype('int8')
+y_test = y_test.astype('int8')
+
+model = keras.models.Sequential()
+
+model.add(keras.layers.Flatten())
+model.add(keras.layers.Dense(128, activation=tf.nn.relu))
+model.add(keras.layers.Dense(128, activation=tf.nn.relu))
+model.add(keras.layers.Dense(128, activation=tf.nn.relu))
+model.add(keras.layers.Dense(10, activation=tf.nn.softmax))
+
+model.compile(optimizer="adam", loss='sparse_categorical_crossentropy', metrics=["accuracy"])
+
+
+model.fit(x_train, y_train , epochs=3)
+
+val_loss, val_acc = model.evaluate(x_test, y_test)
+
+predictions = model.predict(x_test)
+np.argmax(predictions[2120])
+
+plt.imshow(x_test[2120].reshape(28,28))

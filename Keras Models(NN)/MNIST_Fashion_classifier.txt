@@ -1,0 +1,48 @@
+import keras
+import matplotlib
+import matplotlib.pyplot as plt
+import numpy as np
+from sklearn.model_selection import cross_val_score
+from sklearn.linear_model import LogisticRegressionCV
+import tensorflow
+import seaborn as sns
+from sklearn.metrics import confusion_matrix
+
+(x_train, y_train), (x_test, y_test) = keras.datasets.fashion_mnist.load_data()
+x_train = keras.utils.normalize(x_train, axis=1)
+x_test = keras.utils.normalize(x_test, axis=1)
+
+
+Class_labels = ['Tshirt', 'Trouser', 'Pullover', 'Dress', 'Coat', 'Sandal', 'Shirt', 'Sneaker', 'Bag', 'Ankle Boot']
+
+model = keras.models.Sequential()
+model.add(keras.layers.Flatten())
+model.add(keras.layers.Dense(128, activation=tensorflow.nn.relu))
+model.add(keras.layers.Dense(128, activation=tensorflow.nn.relu))
+model.add(keras.layers.Dense(128, activation=tensorflow.nn.relu))
+model.add(keras.layers.Dense(10, activation=tensorflow.nn.softmax))
+
+model.compile(optimizer="adam", loss="sparse_categorical_crossentropy", metrics=["accuracy"])
+
+model.fit(x_train, y_train , epochs=3)
+
+val_loss, val_acc = model.evaluate(x_test, y_test)
+
+predictions = model.predict([x_test])
+
+np.argmax(predictions[30])
+
+plt.imshow(x_test[30])
+
+Confusion Matrix
+
+CM = confusion_matrix(y_test, [np.argmax(i) for i in predictions])
+
+sns.heatmap(CM, annot=True, fmt="d")
+
+Classificatio Report
+
+from sklearn.metrics import classification_report
+CR = classification_report(y_test, [np.argmax(i) for i in predictions], target_names=Class_labels)
+
+print(CR)
